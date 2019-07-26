@@ -7,8 +7,8 @@ namespace Capstone2
     {
         static void Main(string[] args)
         {
-        //create a blank list of tasks for the user to populate
-        List<Task> taskList = new List<Task>();
+            //create a blank list of tasks for the user to populate
+            List<Task> taskList = new List<Task>();
             //create a method for "are you sure? y/n"
             Navigate(taskList);
         }
@@ -76,6 +76,10 @@ namespace Capstone2
         public static void ListTasks(List<Task> taskList)
         {
             Console.Clear();
+            if (taskList.Count == 0)
+            {
+                NoTasks(taskList);
+            }
             int counter = 1;
             foreach (Task task in taskList)
             {
@@ -143,7 +147,57 @@ namespace Capstone2
         }
         public static List<Task> EditTask(List<Task> taskList)
         {
-            GetUserInput("Which task would you like to edit?");
+            string response = "";
+            bool isValid = false;
+            if (taskList.Count == 0)
+            {
+                NoTasks(taskList);
+            }
+            while (!isValid)
+            {
+                response = GetUserInput("Which task would you like to edit?");
+                int counter = 1;
+                foreach(Task task in taskList)
+                {
+                    Console.WriteLine($"{counter}. {task.Description}");
+                    counter++;
+                }
+                isValid = Validator.Int(response);
+                if (isValid && taskList.Count > 0)
+                {
+                    Validator.IsInRange(int.Parse(response), 1, taskList.Count);
+                }
+            }
+            int menuSelection = int.Parse(response);
+            Task selectedTask = taskList[menuSelection - 1];
+            isValid = false;
+            while (!isValid)
+            {
+                Console.Clear();
+                response = GetUserInput("what would you like to edit?\n1. Who the task is assigned to\n2. Description of the task\n3. DueDate of the task");
+                isValid = Validator.Int(response);
+                if (isValid && taskList.Count > 0)
+                {
+                    Validator.IsInRange(int.Parse(response), 1, taskList.Count);
+                }
+            }
+            switch (int.Parse(response))
+            {
+                case
+                    1:
+
+                    break;
+                case
+                    2:
+
+                    break;
+                case
+                    3:
+
+                    break;
+            }
+
+
             return taskList;
         }
         public static List<Task> DeleteTask(List<Task> taskList)
@@ -153,6 +207,12 @@ namespace Capstone2
         public static List<Task> MarkTaskComplete(List<Task> taskList)
         {
             return taskList;
+        }
+        public static void NoTasks(List<Task> taskList)
+        {
+            Console.WriteLine("No tasks to display. press any key to go back to the main menu.");
+            Console.ReadKey();
+            Navigate(taskList);
         }
     }
 }
