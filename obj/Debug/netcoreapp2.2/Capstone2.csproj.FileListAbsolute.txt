@@ -1,0 +1,11 @@
+C:\Users\outvi\source\repos\Capstone2\bin\Debug\netcoreapp2.2\Capstone2.deps.json
+C:\Users\outvi\source\repos\Capstone2\bin\Debug\netcoreapp2.2\Capstone2.runtimeconfig.json
+C:\Users\outvi\source\repos\Capstone2\bin\Debug\netcoreapp2.2\Capstone2.runtimeconfig.dev.json
+C:\Users\outvi\source\repos\Capstone2\bin\Debug\netcoreapp2.2\Capstone2.dll
+C:\Users\outvi\source\repos\Capstone2\bin\Debug\netcoreapp2.2\Capstone2.pdb
+C:\Users\outvi\source\repos\Capstone2\obj\Debug\netcoreapp2.2\Capstone2.csprojAssemblyReference.cache
+C:\Users\outvi\source\repos\Capstone2\obj\Debug\netcoreapp2.2\Capstone2.csproj.CoreCompileInputs.cache
+C:\Users\outvi\source\repos\Capstone2\obj\Debug\netcoreapp2.2\Capstone2.AssemblyInfoInputs.cache
+C:\Users\outvi\source\repos\Capstone2\obj\Debug\netcoreapp2.2\Capstone2.AssemblyInfo.cs
+C:\Users\outvi\source\repos\Capstone2\obj\Debug\netcoreapp2.2\Capstone2.dll
+C:\Users\outvi\source\repos\Capstone2\obj\Debug\netcoreapp2.2\Capstone2.pdb
