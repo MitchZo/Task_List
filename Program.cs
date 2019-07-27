@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Capstone2
@@ -14,8 +15,22 @@ namespace Capstone2
             task1.TeamMember = "delete me";
             task1.Description = "delete this task";
             task1.CompletionDate = DateTime.Now;
+            Task task2 = new Task();
+            task1.TeamMember = "ted";
+            task1.Description = "no";
+            task1.CompletionDate = DateTime.Now;
+            Task task3 = new Task();
+            task1.TeamMember = "ted";
+            task1.Description = "no";
+            task1.CompletionDate = DateTime.Now;
+            Task task4 = new Task();
+            task1.TeamMember = "phil";
+            task1.Description = "no";
+            task1.CompletionDate = DateTime.Now;
             taskList.Add(task1);
-            //create a method for "are you sure? y/n"
+            taskList.Add(task2);
+            taskList.Add(task3);
+            taskList.Add(task4);
             Navigate(taskList);
         }
         public static void Navigate(List<Task> taskList)
@@ -43,6 +58,10 @@ namespace Capstone2
 
                 //validate it's an int
                 isValid = Validator.Int(response);
+                if (isValid)
+                {
+                    isValid = Validator.IsInRange(int.Parse(response), 1, 6);
+                }
             }
             //once we know that the user has given us a valid option, use that option to call the appropriate method.
             switch (int.Parse(response))
@@ -81,18 +100,69 @@ namespace Capstone2
         }
         public static void ListTasks(List<Task> taskList)
         {
-            Console.Clear();
-            if (taskList.Count == 0)
+            string response = "";
+            bool isValid = false;
+            while (!isValid)
             {
-                NoTasks(taskList);
+                Console.Clear();
+                if (taskList.Count == 0)
+                {
+                    NoTasks(taskList);
+                }
+                Console.WriteLine($"1. Filter by Name\n2. Filter by Due Date\n3. All Tasks\n");
+
+                response = GetUserInput("Would you like to narrow your results by Name, Due Date, or get the full list of tasks?");
+                isValid = Validator.Int(response);
+                if (isValid)
+                {
+                    isValid = Validator.IsInRange(int.Parse(response), 1, 3);
+                }
             }
+            List<string> teamMembers = new List<string>();
+            string teamMemberList = "";
+            if (int.Parse(response) == 1)
+            {
+                isValid = false;
+                while (!isValid)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Which name are you looking to filter by?");
+                    foreach (Task task in taskList)
+                    {
+                        if (!teamMembers.Contains(task.TeamMember))
+                        {
+                            teamMembers.Add(task.TeamMember);
+                        }
+                    }
+                    foreach (string teamMember in teamMembers)
+                    {
+                        teamMemberList = teamMemberList + teamMember + ", ";
+                    }
+                    Console.WriteLine(teamMemberList.Remove(teamMemberList.Length - 2));
+                    response = Console.ReadLine();
+
+                    foreach (string teamMember in teamMembers)
+                    {
+                        if (response.ToLower() == teamMember.ToLower())
+                        {
+                            isValid = true;
+                        }
+                        else
+                        {
+                            isValid = false;
+                        }
+                    }
+
+                }
+            }
+
             int counter = 1;
             foreach (Task task in taskList)
             {
                 string taskStatus = "";
                 if (task.IsComplete == true) { taskStatus = "Complete"; }
                 else { taskStatus = "Incomplete"; }
-                Console.WriteLine($"{counter}.\t{task.Description}\n\tfor: {task.TeamMember}\n\tDue on: {task.DueDate.Date.ToString().Substring(0,10)}\n\tstatus: {taskStatus}\n");
+                Console.WriteLine($"{counter}.\t{task.Description}\n\tfor: {task.TeamMember}\n\tDue on: {task.DueDate.Date.ToString().Substring(0, 10)}\n\tstatus: {taskStatus}\n");
                 counter++;
             }
             Console.WriteLine("press any key to return to the main menu.");
@@ -171,7 +241,7 @@ namespace Capstone2
                 //the counter will keep track of the menu choice and act as the navigation selection
                 int counter = 1;
                 //write out each task description and an option for the user to choose
-                foreach(Task task in taskList)
+                foreach (Task task in taskList)
                 {
                     Console.WriteLine($"{counter}. {task.Description}");
                     counter++;
@@ -183,7 +253,7 @@ namespace Capstone2
                 //verify the number the user input is within range of the available tasks
                 if (isValid)
                 {
-                    Validator.IsInRange(int.Parse(response), 1, taskList.Count);
+                    isValid = Validator.IsInRange(int.Parse(response), 1, taskList.Count);
                 }
             }
             //parse the response into an int
@@ -191,67 +261,192 @@ namespace Capstone2
             //the active task is set as the working variable
             Task selectedTask = taskList[menuSelection - 1];
             isValid = false;
-            //ask the user which portion of the task they want to edit.
-            while (!isValid)
+            bool keepGoing = true;
+            while (keepGoing)
             {
-                Console.Clear();
-                response = GetUserInput("what would you like to edit?\n1. Who the task is assigned to\n2. Description of the task\n3. DueDate of the task");
-                isValid = Validator.Int(response);
-                if (isValid)
+                isValid = false;
+                //ask the user which portion of the task they want to edit.
+                while (!isValid)
                 {
-                    isValid = Validator.IsInRange(int.Parse(response), 1, taskList.Count);
+                    Console.Clear();
+                    response = GetUserInput("what would you like to edit?\n1. Who the task is assigned to\n2. Description of the task\n3. DueDate of the task\n4. exit");
+                    isValid = Validator.Int(response);
+                    if (isValid)
+                    {
+                        isValid = Validator.IsInRange(int.Parse(response), 1, 4);
+                    }
+                }
+                switch (int.Parse(response))
+                {
+                    case
+                        1:
+                        isValid = false;
+                        while (!isValid)
+                        {
+                            Console.Clear();
+                            selectedTask.TeamMember = GetUserInput("Who should this task be reassigned to?");
+                            if (selectedTask.TeamMember == "")
+                            {
+                                isValid = false;
+                            }
+                            else
+                            {
+                                isValid = true;
+                            }
+                        }
+                        break;
+                    case
+                        2:
+                        isValid = false;
+                        while (!isValid)
+                        {
+                            Console.Clear();
+                            selectedTask.Description = GetUserInput("What description would you prefer?");
+                            if (selectedTask.Description == "")
+                            {
+                                isValid = false;
+                            }
+                            else
+                            {
+                                isValid = true;
+                            }
+                        }
+                        break;
+                    case
+                        3:
+                        isValid = false;
+                        while (!isValid)
+                        {
+                            Console.Clear();
+                            response = GetUserInput("What would you like the due date changed to? Please format with 2 digit month, 2 digit day, 4 digit year. (MM/DD/YYYY)");
+                            isValid = Validator.IsDateTime(response);
+                        }
+                        string[] dateArray = response.Split('/');
+                        int dueDateMonth = int.Parse(dateArray[0]);
+                        int dueDateDay = int.Parse(dateArray[1]);
+                        int dueDateYear = int.Parse(dateArray[2]);
+                        selectedTask.DueDate = new DateTime(dueDateYear, dueDateMonth, dueDateDay).Date;
+                        break;
+                    case
+                        4:
+                        keepGoing = false;
+                        break;
                 }
             }
-            switch (int.Parse(response))
-            {
-                case
-                    1:
-                    Console.Clear();
-                    selectedTask.TeamMember = GetUserInput("Who should this task be reassigned to?");
-                    break;
-                case
-                    2:
-                    selectedTask.Description = GetUserInput("What description would you prefer?");
-                    break;
-                case
-                    3:
-                    isValid = false;
-                    while (!isValid)
-                    {
-                        response = GetUserInput("What would you like the due date changed to? Please format with 2 digit month, 2 digit day, 4 digit year. (MM/DD/YYYY)");
-                        isValid = Validator.IsDateTime(response);
-                    }
-                    string[] dateArray = response.Split('/');
-                    int dueDateMonth = int.Parse(dateArray[0]);
-                    int dueDateDay = int.Parse(dateArray[1]);
-                    int dueDateYear = int.Parse(dateArray[2]);
-                    selectedTask.DueDate = new DateTime(dueDateYear, dueDateMonth, dueDateDay).Date;
-                    break;
-            }
-
             Navigate(taskList);
             return taskList;
         }
         public static List<Task> DeleteTask(List<Task> taskList)
         {
+            string response = "";
+            bool isValid = false;
             //verify there are tasks to edit
             if (taskList.Count == 0)
             {
                 Console.Clear();
                 NoTasks(taskList);
             }
+            while (!isValid)
+            {
+                Console.Clear();
+                int counter = 1;
+                //write out each task description and an option for the user to choose
+                foreach (Task task in taskList)
+                {
+                    Console.WriteLine($"{counter}. {task.Description}");
+                    counter++;
+                    Console.WriteLine();
+                }
+                response = GetUserInput("Which task would you like to delete?");
+                //verify the user has input a number. if they haven't, ask again.
+                isValid = Validator.Int(response);
+                //verify the number the user input is within range of the available tasks
+                if (isValid)
+                {
+                    isValid = Validator.IsInRange(int.Parse(response), 1, taskList.Count);
+                }
+            }
+            //parse the response into an int
+            int menuSelection = int.Parse(response);
 
+            Task selectedTask = taskList[menuSelection - 1];
+            string completionStatus = "";
+            isValid = false;
+            while (!isValid)
+            {
+                Console.Clear();
+                if (selectedTask.IsComplete == true)
+                {
+                    completionStatus = "Complete";
+                }
+                else
+                {
+                    completionStatus = "Incomplete";
+                }
+                Console.WriteLine($"Type YES in all caps if you are sure you want to delete this task. It cannot be undone.\n\nDescription: {selectedTask.Description}\nFor: {selectedTask.TeamMember}\nDue on: {selectedTask.DueDate}\nStatus: {completionStatus}");
+                if (selectedTask.IsComplete == true)
+                {
+                    Console.WriteLine($"Completed on: {selectedTask.CompletionDate}");
+                }
+                response = Console.ReadLine();
+                isValid = Validator.YesNo(response);
+            }
+            if (response == "YES")
+            {
+                Console.WriteLine("Task removed. Press any key to return to the main menu.");
+                taskList.RemoveAt(menuSelection - 1);
+                Console.ReadKey();
+                Navigate(taskList);
+            }
+            else
+            {
+                Console.WriteLine("Task has NOT been removed. Press any key to return to the main menu.");
+                Console.ReadKey();
+                Navigate(taskList);
+            }
             return taskList;
         }
         public static List<Task> MarkTaskComplete(List<Task> taskList)
         {
+            bool isValid = false;
+            string response = "";
             //verify there are tasks to edit
             if (taskList.Count == 0)
             {
                 Console.Clear();
                 NoTasks(taskList);
             }
+            while (!isValid)
+            {
+                Console.Clear();
+                int counter = 1;
+                //write out each task description and an option for the user to choose
+                foreach (Task task in taskList)
+                {
+                    Console.WriteLine($"{counter}. {task.Description}");
+                    counter++;
+                    Console.WriteLine();
+                }
+                response = GetUserInput("Which task would you like to mark as complete?");
+                //verify the user has input a number. if they haven't, ask again.
+                isValid = Validator.Int(response);
+                //verify the number the user input is within range of the available tasks
+                if (isValid)
+                {
+                    isValid = Validator.IsInRange(int.Parse(response), 1, taskList.Count);
+                }
+            }
+            //parse the response into an int
+            int menuSelection = int.Parse(response);
 
+            Task selectedTask = taskList[menuSelection - 1];
+
+            selectedTask.IsComplete = true;
+            selectedTask.CompletionDate = DateTime.Now;
+
+            Console.WriteLine($"{selectedTask.Description} complete with a completion date of {DateTime.Now.ToString().Substring(0, 10)}\nPress any key to return to the main menu.");
+            Console.ReadKey();
+            Navigate(taskList);
             return taskList;
         }
         public static void NoTasks(List<Task> taskList)

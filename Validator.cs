@@ -37,7 +37,7 @@ namespace Capstone2
         }
         public static bool YesNo(string input)
         {
-            input.ToLower();
+            input = input.ToLower();
             if (input == "yes" || input == "y" || input == "no" || input == "n")
             {
                 return true;
@@ -53,7 +53,7 @@ namespace Capstone2
         }
         public static bool IsInRange(int input, int min, int max)
         {
-            if (input >= min && input >= max)
+            if (input >= min && input <= max)
             {
                 return true;
             }
