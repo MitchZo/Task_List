@@ -78,7 +78,7 @@ namespace Capstone2
         {
             teamMember = _teamMember;
             description = _description;
-            dueDate = _dueDate;
+            dueDate = _dueDate.Date;
             isComplete = false;
         }
 

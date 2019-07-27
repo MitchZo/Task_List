@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace Capstone2
 {
@@ -67,33 +68,41 @@ namespace Capstone2
             string month = "";
             string day = "";
             string year = "";
-            //try to split into MM DD and YYYY
-            string[] dateArray = userInput.Split('/');
-            //validate that each string that comprises the array is an int
-            if (dateArray.Length == 3)
+
+            if (Regex.IsMatch(userInput, @"^(0?[1-9]|1[0-2])[\/](0?[1-9]|[12]\d|3[01])[\/](19|20)\d{2}$"))
             {
-                for (int i = 0; i < 3; i++)
+                //try to split into MM DD and YYYY
+                string[] dateArray = userInput.Split('/');
+                //validate that each string that comprises the array is an int
+                if (dateArray.Length == 3)
                 {
-                    if (Validator.Int(dateArray[i]))
+                    for (int i = 0; i < 3; i++)
                     {
-                        isValid = true;
+                        if (Validator.Int(dateArray[i]))
+                        {
+                            isValid = true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
                     }
-                    else
+                    if (isValid)
                     {
-                        return false;
+                        month = dateArray[0];
+                        day = dateArray[1];
+                        year = dateArray[2];
                     }
-                }
-                if (isValid)
-                {
-                    month = dateArray[0];
-                    day = dateArray[1];
-                    year = dateArray[2];
-                }
-                if (Validator.Int(day) && Validator.Int(month) && Validator.Int(year))
-                {
-                    if (day.Length == 2 && month.Length == 2 && year.Length == 4)
+                    if (Validator.Int(day) && Validator.Int(month) && Validator.Int(year))
                     {
-                        return true;
+                        if (day.Length == 2 && month.Length == 2 && year.Length == 4)
+                        {
+                            return true;
+                        }
+                        else
+                        {
+                            return false;
+                        }
                     }
                     else
                     {
