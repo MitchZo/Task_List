@@ -51,7 +51,7 @@ namespace Capstone2
         {
             return int.TryParse(input, out int variable);
         }
-        public static bool IsInRange(int input, int min, int max)
+        public static bool IsInRange( int input, int min, int max)
         {
             if (input >= min && input <= max)
             {

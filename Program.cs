@@ -14,22 +14,22 @@ namespace Capstone2
             Task task1 = new Task();
             task1.TeamMember = "delete me";
             task1.Description = "delete this task";
-            task1.CompletionDate = DateTime.Now;
-            Task task2 = new Task();
-            task1.TeamMember = "ted";
-            task1.Description = "no";
-            task1.CompletionDate = DateTime.Now;
-            Task task3 = new Task();
-            task1.TeamMember = "ted";
-            task1.Description = "no";
-            task1.CompletionDate = DateTime.Now;
-            Task task4 = new Task();
-            task1.TeamMember = "phil";
-            task1.Description = "no";
-            task1.CompletionDate = DateTime.Now;
+            task1.DueDate = DateTime.Now;
             taskList.Add(task1);
+            Task task2 = new Task();
+            task2.TeamMember = "ted";
+            task2.Description = "no";
+            task2.DueDate = DateTime.Now;
             taskList.Add(task2);
+            Task task3 = new Task();
+            task3.TeamMember = "ted";
+            task3.Description = "no";
+            task3.DueDate = DateTime.Now;
             taskList.Add(task3);
+            Task task4 = new Task();
+            task4.TeamMember = "phil";
+            task4.Description = "no";
+            task4.DueDate = DateTime.Now;
             taskList.Add(task4);
             Navigate(taskList);
         }
@@ -100,8 +100,10 @@ namespace Capstone2
         }
         public static void ListTasks(List<Task> taskList)
         {
+            List<Task> filteredTaskList = new List<Task>();
             string response = "";
             bool isValid = false;
+            int counter = 1;
             while (!isValid)
             {
                 Console.Clear();
@@ -118,56 +120,85 @@ namespace Capstone2
                     isValid = Validator.IsInRange(int.Parse(response), 1, 3);
                 }
             }
-            List<string> teamMembers = new List<string>();
-            string teamMemberList = "";
             if (int.Parse(response) == 1)
             {
+                List<string> teamMembers = new List<string>();
+                string teamMemberList = "";
                 isValid = false;
+                Console.Clear();
+
+                foreach (Task task in taskList)
+                {
+                    if (!teamMembers.Contains(task.TeamMember))
+                    {
+                        teamMembers.Add(task.TeamMember);
+                    }
+                }
+                foreach (string teamMember in teamMembers)
+                {
+                    teamMemberList = teamMemberList + teamMember + ", ";
+                }
                 while (!isValid)
                 {
                     Console.Clear();
-                    Console.WriteLine("Which name are you looking to filter by?");
-                    foreach (Task task in taskList)
-                    {
-                        if (!teamMembers.Contains(task.TeamMember))
-                        {
-                            teamMembers.Add(task.TeamMember);
-                        }
-                    }
-                    foreach (string teamMember in teamMembers)
-                    {
-                        teamMemberList = teamMemberList + teamMember + ", ";
-                    }
+                    Console.WriteLine("Which name you would like to filter by?");
                     Console.WriteLine(teamMemberList.Remove(teamMemberList.Length - 2));
                     response = Console.ReadLine();
 
-                    foreach (string teamMember in teamMembers)
+                    bool matchFound = false;
+                    //check to see if the user's input matches a team member.
+                    for (int i = 0; i < teamMembers.Count; i++)
                     {
-                        if (response.ToLower() == teamMember.ToLower())
-                        {
-                            isValid = true;
-                        }
-                        else
+                        if (response.ToLower() != teamMembers[i].ToLower() && !matchFound)
                         {
                             isValid = false;
                         }
+                        else
+                        {
+                            isValid = true;
+                            matchFound = true;
+                        }
                     }
-
                 }
+                filteredTaskList = taskList;
+                counter = 1;
+                foreach (Task task in filteredTaskList)
+                {
+                    if (task.TeamMember.ToLower() == response)
+                    {
+                        string taskStatus = "";
+                        if (task.IsComplete == true) { taskStatus = "Complete"; }
+                        else { taskStatus = "Incomplete"; }
+                        Console.WriteLine($"{counter}.\t{task.Description}\n\tfor: {task.TeamMember}\n\tDue on: {task.DueDate.Date.ToString().Substring(0, 10)}\n\tstatus: {taskStatus}\n");
+                        counter++;
+                    }
+                }
+                Console.WriteLine("press any key to return to the main menu.");
+                Console.ReadKey();
+                Navigate(taskList);
             }
-
-            int counter = 1;
-            foreach (Task task in taskList)
+            if (int.Parse(response) == 2)
             {
-                string taskStatus = "";
-                if (task.IsComplete == true) { taskStatus = "Complete"; }
-                else { taskStatus = "Incomplete"; }
-                Console.WriteLine($"{counter}.\t{task.Description}\n\tfor: {task.TeamMember}\n\tDue on: {task.DueDate.Date.ToString().Substring(0, 10)}\n\tstatus: {taskStatus}\n");
-                counter++;
+
+                Console.WriteLine("press any key to return to the main menu.");
+                Console.ReadKey();
+                Navigate(taskList);
             }
-            Console.WriteLine("press any key to return to the main menu.");
-            Console.ReadKey();
-            Navigate(taskList);
+            if (int.Parse(response) == 3)
+            {
+                counter = 1;
+                foreach (Task task in taskList)
+                {
+                    string taskStatus = "";
+                    if (task.IsComplete == true) { taskStatus = "Complete"; }
+                    else { taskStatus = "Incomplete"; }
+                    Console.WriteLine($"{counter}.\t{task.Description}\n\tfor: {task.TeamMember}\n\tDue on: {task.DueDate.Date.ToString().Substring(0, 10)}\n\tstatus: {taskStatus}\n");
+                    counter++;
+                }
+                Console.WriteLine("press any key to return to the main menu.");
+                Console.ReadKey();
+                Navigate(taskList);
+            }
         }
         public static List<Task> AddTask(List<Task> taskList)
         {
