@@ -14,22 +14,22 @@ namespace Capstone2
             Task task1 = new Task();
             task1.TeamMember = "delete me";
             task1.Description = "delete this task";
-            task1.DueDate = DateTime.Now;
+            task1.DueDate = DateTime.Parse("01/11/2020");
             taskList.Add(task1);
             Task task2 = new Task();
             task2.TeamMember = "ted";
             task2.Description = "no";
-            task2.DueDate = DateTime.Now;
+            task2.DueDate = DateTime.Parse("05/22/1999");
             taskList.Add(task2);
             Task task3 = new Task();
             task3.TeamMember = "ted";
             task3.Description = "no";
-            task3.DueDate = DateTime.Now;
+            task3.DueDate = DateTime.Parse("06/20/1984");
             taskList.Add(task3);
             Task task4 = new Task();
             task4.TeamMember = "phil";
             task4.Description = "no";
-            task4.DueDate = DateTime.Now;
+            task4.DueDate = DateTime.Parse("02/05/2021");
             taskList.Add(task4);
             Navigate(taskList);
         }
@@ -111,13 +111,13 @@ namespace Capstone2
                 {
                     NoTasks(taskList);
                 }
-                Console.WriteLine($"1. Filter by Name\n2. Filter by Due Date\n3. All Tasks\n");
+                Console.WriteLine($"1. Filter by Name\n2. Filter by Due Date\n3. All Tasks\n4. Exit\n");
 
                 response = GetUserInput("Would you like to narrow your results by Name, Due Date, or get the full list of tasks?");
                 isValid = Validator.Int(response);
                 if (isValid)
                 {
-                    isValid = Validator.IsInRange(int.Parse(response), 1, 3);
+                    isValid = Validator.IsInRange(int.Parse(response), 1, 4);
                 }
             }
             if (int.Parse(response) == 1)
@@ -169,7 +169,12 @@ namespace Capstone2
                         string taskStatus = "";
                         if (task.IsComplete == true) { taskStatus = "Complete"; }
                         else { taskStatus = "Incomplete"; }
-                        Console.WriteLine($"{counter}.\t{task.Description}\n\tfor: {task.TeamMember}\n\tDue on: {task.DueDate.Date.ToString().Substring(0, 10)}\n\tstatus: {taskStatus}\n");
+                        string writtenDueDate = task.DueDate.ToString();
+                        Console.WriteLine($"\n{counter}.\t{task.Description}\n\tfor: {task.TeamMember}\n\tDue on: {writtenDueDate.Substring(0, writtenDueDate.Length-11)}\n\tstatus: {taskStatus}");
+                        if (task.IsComplete)
+                        {
+                            string writtenCompletionDate = task.CompletionDate.ToString();
+                            Console.WriteLine($"\tCompleted on: {writtenCompletionDate.Substring(0,writtenCompletionDate.Length-11)}"); }
                         counter++;
                     }
                 }
@@ -179,6 +184,37 @@ namespace Capstone2
             }
             if (int.Parse(response) == 2)
             {
+                DateTime filterDate = new DateTime();
+                isValid = false;
+                while (!isValid)
+                {
+                    Console.Clear();
+                    response = GetUserInput("Enter a date to see all tasks due before that date. Format your date with 2 digit month, 2 digit day, and 4 digit year. (MM/DD/YYYY)");
+                    isValid = Validator.IsDateTime(response);
+                }
+                filterDate = DateTime.Parse(response);
+                counter = 1;
+                foreach(Task task in taskList)
+                {
+                    if (filterDate > task.DueDate)
+                    {
+                        string taskStatus = "";
+                        if (task.IsComplete == true)
+                        { taskStatus = "Complete"; }
+                        else
+                        { taskStatus = "Incomplete"; }
+                        string writtenDueDate = task.DueDate.ToString();
+                        Console.WriteLine($"\n{counter}.\t{task.Description}\n\tfor: {task.TeamMember}\n\tDue on: {writtenDueDate.Substring(0, writtenDueDate.Length-11)}\n\tstatus: {taskStatus}");
+                        if (task.IsComplete)
+                        {
+                            string writtenCompletionDate = task.CompletionDate.ToString();
+                            Console.WriteLine($"\tCompleted on: {writtenCompletionDate.Substring(0, writtenCompletionDate.Length - 11)}");
+                        
+                        }
+                        counter++;
+                    }
+
+                }
 
                 Console.WriteLine("press any key to return to the main menu.");
                 Console.ReadKey();
@@ -192,11 +228,23 @@ namespace Capstone2
                     string taskStatus = "";
                     if (task.IsComplete == true) { taskStatus = "Complete"; }
                     else { taskStatus = "Incomplete"; }
-                    Console.WriteLine($"{counter}.\t{task.Description}\n\tfor: {task.TeamMember}\n\tDue on: {task.DueDate.Date.ToString().Substring(0, 10)}\n\tstatus: {taskStatus}\n");
+                    string writtenDueDate = task.DueDate.ToString();
+                    Console.WriteLine($"\n{counter}.\t{task.Description}\n\tfor: {task.TeamMember}\n\tDue on: {writtenDueDate.Substring(0, writtenDueDate.Length-11)}\n\tstatus: {taskStatus}");
+                    if (task.IsComplete)
+                    {
+                        string writtenCompletionDate = task.CompletionDate.ToString();
+                        Console.WriteLine($"\tCompleted on: {writtenCompletionDate.Substring(0, writtenCompletionDate.Length - 11)}");
+
+                    }
                     counter++;
                 }
-                Console.WriteLine("press any key to return to the main menu.");
+                Console.WriteLine($"\npress any key to return to the main menu.");
                 Console.ReadKey();
+                Navigate(taskList);
+            }
+            if (int.Parse(response) == 4)
+            {
+                Console.Clear();
                 Navigate(taskList);
             }
         }
@@ -219,14 +267,30 @@ namespace Capstone2
                 //add the new blank task to the list of tasks
                 taskList.Add(newTask);
                 Console.Clear();
+                Console.WriteLine("Type EXIT in all caps to go back to the main menu.");
                 //have the user set who the task is for and a brief description
                 newTask.TeamMember = GetUserInput("Who is this task for?");
-                newTask.Description = GetUserInput("Please provide a brief description of this task");
+                if(newTask.TeamMember == "EXIT")
+                {
+                    taskList.RemoveAt(taskList.Count-1);
+                    Navigate(taskList);
+                }
+                newTask.Description = GetUserInput("Please provide a brief description of this task.");
+                if (newTask.Description == "EXIT")
+                {
+                    taskList.RemoveAt(taskList.Count-1);
+                    Navigate(taskList);
+                }
                 isValid = false;
                 while (!isValid)
                 {
                     //get Due Date from the user
                     dueDateString = GetUserInput("enter a due date for this task. Use a 2 digit month, 2 digit day, and 4 digit year (MM/DD/YYYY)");
+                    if (dueDateString == "EXIT")
+                    {
+                        taskList.RemoveAt(taskList.Count-1);
+                        Navigate(taskList);
+                    }
                     isValid = Validator.IsDateTime(dueDateString);
                 }
 
@@ -388,17 +452,24 @@ namespace Capstone2
                     counter++;
                     Console.WriteLine();
                 }
+                Console.WriteLine($"{counter}. Exit");
                 response = GetUserInput("Which task would you like to delete?");
                 //verify the user has input a number. if they haven't, ask again.
                 isValid = Validator.Int(response);
                 //verify the number the user input is within range of the available tasks
                 if (isValid)
                 {
-                    isValid = Validator.IsInRange(int.Parse(response), 1, taskList.Count);
+                    isValid = Validator.IsInRange(int.Parse(response), 1, taskList.Count+1);
                 }
             }
             //parse the response into an int
             int menuSelection = int.Parse(response);
+
+            if(menuSelection == taskList.Count+1)
+            {
+                Console.Clear();
+                Navigate(taskList);
+            }
 
             Task selectedTask = taskList[menuSelection - 1];
             string completionStatus = "";
@@ -458,24 +529,30 @@ namespace Capstone2
                     counter++;
                     Console.WriteLine();
                 }
+                Console.WriteLine($"{counter}. Exit");
                 response = GetUserInput("Which task would you like to mark as complete?");
                 //verify the user has input a number. if they haven't, ask again.
                 isValid = Validator.Int(response);
                 //verify the number the user input is within range of the available tasks
                 if (isValid)
                 {
-                    isValid = Validator.IsInRange(int.Parse(response), 1, taskList.Count);
+                    isValid = Validator.IsInRange(int.Parse(response), 1, taskList.Count + 1);
                 }
             }
             //parse the response into an int
             int menuSelection = int.Parse(response);
+            if (menuSelection == taskList.Count+1)
+            {
+                Console.Clear();
+                Navigate(taskList); }
 
-            Task selectedTask = taskList[menuSelection - 1];
+            Task selectedTask = taskList[menuSelection-1];
 
             selectedTask.IsComplete = true;
             selectedTask.CompletionDate = DateTime.Now;
+            string writtenCompletionDate = selectedTask.CompletionDate.ToString();
 
-            Console.WriteLine($"{selectedTask.Description} complete with a completion date of {DateTime.Now.ToString().Substring(0, 10)}\nPress any key to return to the main menu.");
+            Console.WriteLine($"{selectedTask.Description} complete with a completion date of {writtenCompletionDate.Substring(0,writtenCompletionDate.Length-11)}\nPress any key to return to the main menu.");
             Console.ReadKey();
             Navigate(taskList);
             return taskList;
